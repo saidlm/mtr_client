@@ -1,0 +1,6 @@
+services:
+  control:
+    hostname: twamp-client
+  
+  probe1:
+    hostname: twamp-client

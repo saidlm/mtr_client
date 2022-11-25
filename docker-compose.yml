@@ -1,0 +1,41 @@
+services:
+  control:
+    build:
+      context: .
+      dockerfile: Dockerfile.control
+    container_name: mtr-control
+    hostname: mtr-control
+    image: tone/mtr-control:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
+        #ipv4_address: 172.30.0.10
+    restart: unless-stopped
+
+  probe1:
+    build:
+      context: .
+      dockerfile: Dockerfile.probe
+    depends_on:
+      - control
+    container_name: mtr-probe1
+    hostname: mtr-probe1
+    image: tone/mtr-probe:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
+        #ipv4_address: 172.30.0.11
+    restart: unless-stopped
+
+networks:
+  mtr-client:
+    driver: bridge
+      #ipam:
+      #driver: default
+        #config:
+        #- subnet: 172.30.0.0/16
+
+volumes:
+  mtr-client:

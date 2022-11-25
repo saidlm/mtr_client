@@ -1,0 +1,21 @@
+FROM alpine:latest
+
+MAINTAINER Martin Saidl, martin.saidl@tone.cz
+
+ENV DATA_DIR=/config/data
+ENV BIN_DIR=/config/bin
+ENV CRON_DIR=/config/cron.d
+
+RUN apk update --no-cache
+RUN apk add --no-cache bash jo jq dcron curl wget git ca-certificates
+
+RUN mkdir /ipprobe
+RUN mkdir /ipprobe/cron.d/ 
+COPY bindir /ipprobe/bin/
+COPY datadir /ipprobe/data/
+RUN chmod +x /ipprobe/bin/*
+
+COPY scripts/entrypoint-control.sh /sbin/entrypoint.sh
+RUN chmod +x /sbin/entrypoint.sh
+
+ENTRYPOINT ["/sbin/entrypoint.sh"]
