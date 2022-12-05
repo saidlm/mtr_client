@@ -1,6 +1,24 @@
 services:
   control:
-    hostname: twamp-client
+    container_name: mtr-control
+    hostname: mtr-client-control
   
   probe1:
-    hostname: twamp-client
+    container_name: mtr-probe1
+    hostname: mtr-client-probe1
+  
+  probe2:
+    container_name: mtr-probe2
+    hostname: mtr-client-probe2
+  
+  probe3:
+    container_name: mtr-probe3
+    hostname: mtr-client-probe3     
+  
+  probe4:
+    container_name: mtr-probe4
+    hostname: mtr-client-probe4
+  
+  probe5:
+    container_name: mtr-probe5
+    hostname: mtr-client-probe5

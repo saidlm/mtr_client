@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.control
+    profiles: ["all", "remove", "1", "2", "3", "4", "5"]
     container_name: mtr-control
     hostname: mtr-control
     image: tone/mtr-control:latest
@@ -17,6 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.probe
+    profiles: ["all", "remove", "1", "2", "3", "4", "5"]
     depends_on:
       - control
     container_name: mtr-probe1
@@ -26,16 +28,63 @@ services:
       - mtr-client:/data
     networks:
       mtr-client:
-        #ipv4_address: 172.30.0.11
+    restart: unless-stopped
+
+  probe2:
+    profiles: ["all", "remove", "2", "3", "4", "5"]
+    depends_on:
+      - control
+    container_name: mtr-probe2
+    hostname: mtr-probe2
+    image: tone/mtr-probe:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
+    restart: unless-stopped
+
+  probe3:
+    profiles: ["all", "remove", "3", "4", "5"]
+    depends_on:
+      - control
+    container_name: mtr-probe3
+    hostname: mtr-probe3
+    image: tone/mtr-probe:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
+    restart: unless-stopped
+
+  probe4:
+    profiles: ["all", "remove", "4", "5"]
+    depends_on:
+      - control
+    container_name: mtr-probe4
+    hostname: mtr-probe4
+    image: tone/mtr-probe:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
+    restart: unless-stopped
+
+  probe5:
+    profiles: ["all", "remove", "5"]
+    depends_on:
+      - control
+    container_name: mtr-probe5
+    hostname: mtr-probe5
+    image: tone/mtr-probe:latest
+    volumes:
+      - mtr-client:/data
+    networks:
+      mtr-client:
     restart: unless-stopped
 
 networks:
   mtr-client:
     driver: bridge
-      #ipam:
-      #driver: default
-        #config:
-        #- subnet: 172.30.0.0/16
 
 volumes:
   mtr-client:

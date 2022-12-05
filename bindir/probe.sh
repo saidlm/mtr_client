@@ -30,9 +30,9 @@ if [ -f "$DATA/$TARGETS_FILE" ]; then
 		if [ $ERR -eq 124 ]; then
 			echo "Destination host is not responding; timeout."
 		elif [ $ERR -eq 129 ]; then
-			echo "Some unexpected situation occurred; KILL signal was sent to twamp ping."
+			echo "Some unexpected situation occurred; KILL signal was sent to mtr."
 		elif [ $ERR -ne 0 ]; then
-    			echo "Some error occurred during processing of metis twamp wrapper!"
+    			echo "Some error occurred during processing of metis mtr wrapper!"
 		else
 			echo "Ok."
 		fi
