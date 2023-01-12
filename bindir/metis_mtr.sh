@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# METIS mtr wrapper for full traceroute and
+# mtr wrapper for full traceroute and
 # traceroute's last hop ping measurements
 #
-# Release 1.2.0
+# Release 1.4.0
 #
-# Bartlomiej Kos, bartlomiej.kos@t-mobile.pl / NWI-ITI / GTS Poland
-# Martin Saidl, martin.saidl@t-mobile.cz / NWI-ITI / GTS Czech Republic
-# Andreas Laudwein, andreas.laudwein@telekom.de / NWI-ITI
+# Bartlomiej Kos, bartlomiej.kos@t-mobile.pl
+# Martin Saidl, martin.saidl@t-mobile.cz
+# Andreas Laudwein, andreas.laudwein@telekom.de
 #
 
 ###
@@ -19,7 +19,15 @@
 
 ### ENVIRONMENTALS
 
-PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
+
+### VARIABLES
+
+_test_source1=""
+_custom_comment1=""
+_custom_id1="0"
+_geo_lon1="0.0"
+_geo_lat1="0.0"
 
 ###
 ### FUNCTIONS
@@ -80,6 +88,8 @@ case ${return_value1} in
   if [[ ${_hop_address1} =~ ${_test_target1} ]]; then _target_reached1="1"; else _target_reached1="0"; fi
   output_oneliner1="${output_oneliner1},\"test_target_reached\":${_target_reached1}"
 
+  output_oneliner1="${output_oneliner1},\"custom_comment\":\"${_custom_comment1}\",\"custom_id\":${_custom_id1},\"geo_lon\":${_geo_lon1},\"geo_lat\":${_geo_lat1}"
+
   output_oneliner1="${output_oneliner1}}"
 
   send_result1
@@ -114,7 +124,7 @@ if [ "${_test_source1}" = "" ]; then _test_source1="$(hostname -f)"; fi
 ### LOOPS
 ###
 
-while getopts "t:q:d:a:s:" _options1; do
+while getopts "t:q:d:a:s:c:i:o:l:" _options1; do
  case ${_options1} in
  t)
   _test_target1="${OPTARG}"
@@ -131,6 +141,18 @@ while getopts "t:q:d:a:s:" _options1; do
   ;;
  s)
   _test_source1="${OPTARG}"
+  ;;
+ c)
+  _custom_comment1="${OPTARG}"
+  ;;
+ i)
+  _custom_id1="${OPTARG}"
+  ;;
+ o)
+  _geo_lon1="${OPTARG}"
+  ;;
+ l)
+  _geo_lat1="${OPTARG}"
   ;;
  *)
   exit 1
