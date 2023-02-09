@@ -49,8 +49,8 @@ create_conf_dirs
 create_crontabs
 export_env
 
-#echo "Starting download of the configuration (first run) ..."
-#/config/bin/config_downloader.sh
+echo "Starting download of the configuration (first run) ..."
+/config/bin/config_downloader.sh
 
 echo "Starting crond ..."
 $(which crond) -f -l 2 -L /dev/stdout
