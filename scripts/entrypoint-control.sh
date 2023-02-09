@@ -12,9 +12,9 @@ create_conf_dirs() {
   # populate default configuration if it does not exis
   echo "Populating default configs ..."
 
-#  if [ ! -d $BIN ]; then
+  if [ ! -d $BIN ]; then
     cp -r /ipprobe/bin $BIN
-#  fi
+  fi
 
   if [ ! -d $DATA ]; then
     cp -r /ipprobe/data $DATA
@@ -29,7 +29,7 @@ create_crontabs() {
 
   echo "SHELL=/bin/bash" > $CRON/config_downloader
   echo "BASH_ENV=/container.env" >> $CRON/config_downloader
-  echo "1 */12 * * * root $BIN/config_downloader.sh > /proc/1/fd/1 2>/proc/1/fd/2" >> $CRON/config_downloader
+  echo "1 */12 * * * $BIN/config_downloader.sh > /proc/1/fd/1 2>/proc/1/fd/2" >> $CRON/config_downloader
 
   echo "Linking crontabs ..."
   rm -rf /etc/cron.d
@@ -49,8 +49,8 @@ create_conf_dirs
 create_crontabs
 export_env
 
-echo "Starting download of the configuration (first run) .."
-/config/bin/config_downloader.sh
+#echo "Starting download of the configuration (first run) ..."
+#/config/bin/config_downloader.sh
 
 echo "Starting crond ..."
-exec $(which cron) -f -L 15
+$(which crond) -f -l 2 -L /dev/stdout

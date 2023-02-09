@@ -4,16 +4,9 @@
 DATA=${DATA_DIR}
 BIN=${BIN_DIR}
 
-PROBE=$BIN/probe
+PROBE=$BIN/probe.sh
 
-echo " --> data: $DATA"
-echo " --> bin: $BIN"
-echo " --> probe: $PROBE"
-
-ls $DATA
-ls $BIN
-
-if [ -f $PROBE ]; then
+if [ -f "$PROBE" ]; then
 	source $PROBE
 	exit 0
 else

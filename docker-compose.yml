@@ -6,12 +6,11 @@ services:
     profiles: ["all", "remove", "1", "2", "3", "4", "5"]
     container_name: mtr-control
     hostname: mtr-control
-    image: tone/mtr-control:latest
+    image: mtr-control:latest
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
-        #ipv4_address: 172.30.0.10
     restart: unless-stopped
 
   probe1:
@@ -23,9 +22,11 @@ services:
       - control
     container_name: mtr-probe1
     hostname: mtr-probe1
-    image: tone/mtr-probe:latest
+    image: mtr-probe:latest
+    environment:
+      - PROBE_SOURCE=${PROBE_SOURCE}
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
     restart: unless-stopped
@@ -36,9 +37,11 @@ services:
       - control
     container_name: mtr-probe2
     hostname: mtr-probe2
-    image: tone/mtr-probe:latest
+    image: mtr-probe:latest
+    environment:
+      - PROBE_SOURCE=${PROBE_SOURCE}
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
     restart: unless-stopped
@@ -49,9 +52,11 @@ services:
       - control
     container_name: mtr-probe3
     hostname: mtr-probe3
-    image: tone/mtr-probe:latest
+    image: mtr-probe:latest
+    environment:
+      - PROBE_SOURCE=${PROBE_SOURCE}
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
     restart: unless-stopped
@@ -62,9 +67,11 @@ services:
       - control
     container_name: mtr-probe4
     hostname: mtr-probe4
-    image: tone/mtr-probe:latest
+    image: mtr-probe:latest
+    environment:
+      - PROBE_SOURCE=${PROBE_SOURCE}
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
     restart: unless-stopped
@@ -75,9 +82,11 @@ services:
       - control
     container_name: mtr-probe5
     hostname: mtr-probe5
-    image: tone/mtr-probe:latest
+    image: mtr-probe:latest
+    environment:
+      - PROBE_SOURCE=${PROBE_SOURCE}
     volumes:
-      - mtr-client:/data
+      - mtr-client:/config
     networks:
       mtr-client:
     restart: unless-stopped
