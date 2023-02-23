@@ -4,8 +4,8 @@
 DATA=${DATA_DIR}
 BIN=${BIN_DIR}
 
-CONFIG_FILE="mtr_$CONFIG_FILE"
-TARGETS_FILE="mtr_$TARGETS_FILE"
+CONFIG_FILE="global_config.json"
+TARGETS_FILE="targets_list.json"
 
 ## Loading global configuration
 if [ -f "$DATA/$CONFIG_FILE" ]; then

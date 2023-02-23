@@ -4,8 +4,8 @@
 DATA=${DATA_DIR}
 BIN=${BIN_DIR}
 
-CONFIG_FILE="mtr_$CONFIG_FILE"
-TARGETS_FILE="mtr_$TARGETS_FILE"
+CONFIG_FILE="global_config.json"
+TARGETS_FILE="targets_list.json"
 
 # Using lock to avoid to start more processes
 (
@@ -13,7 +13,7 @@ flock -n 200 || echo "Measuring is still in progress, skipping this run."
 
 # Setting probe source name
 if [ -z "$PROBE_SOURCE" ]; then
-	$SOURCE=`hostname -f`
+	SOURCE=`hostname -f`
 else
 	SOURCE=$PROBE_SOURCE
 fi
@@ -30,12 +30,15 @@ else
 fi
 
 ## Main loop
+echo "test: DATA/$TARGETS_FILE"
+
 if [ -f "$DATA/$TARGETS_FILE" ]; then
 	cat $DATA/$TARGETS_FILE | jq -r '.Targets[] | @base64' | shuf | while read line ; do
-		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Tags, Custom_comment, Latitude, Longitude} | to_entries | .[] | .key + "=" + (.value | @sh)')"
+		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Custom_comment, Latitude, Longitude} | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 		echo -n "Processing $IP ... "
-		$BIN/metis_twmping.sh -t $IP -q $DSCP -d $DestinationURL -a $DestinationPassword -s $SURCE -c $Custom_comment -o $Longitude -l $Latitude
+		echo "$BIN/metis_mtr.sh -t $IP -q $DSCP -d $DestinationURL -a $DestinationPassword -s $SOURCE -c $Custom_comment -o $Longitude -l $Latitude"
+		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DestinationURL" -a "$DestinationPassword" -s "$SOURCE" -c "$Custom_comment" -o "$Longitude" -l "$Latitude"
 		ERR=$?
 		if [ $ERR -eq 124 ]; then
 			echo "Destination host is not responding; timeout."

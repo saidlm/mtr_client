@@ -3,6 +3,7 @@
 ## Variables
 DATA=${DATA_DIR}
 BIN=${BIN_DIR}
+SOURCE=${PROBE_SOURCE}
 
 PROBE=$BIN/probe.sh
 
