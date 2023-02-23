@@ -30,14 +30,11 @@ else
 fi
 
 ## Main loop
-echo "test: DATA/$TARGETS_FILE"
-
 if [ -f "$DATA/$TARGETS_FILE" ]; then
 	cat $DATA/$TARGETS_FILE | jq -r '.Targets[] | @base64' | shuf | while read line ; do
 		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Custom_comment, Latitude, Longitude} | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 		echo -n "Processing $IP ... "
-		echo "$BIN/metis_mtr.sh -t $IP -q $DSCP -d $DestinationURL -a $DestinationPassword -s $SOURCE -c $Custom_comment -o $Longitude -l $Latitude"
 		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DestinationURL" -a "$DestinationPassword" -s "$SOURCE" -c "$Custom_comment" -o "$Longitude" -l "$Latitude"
 		ERR=$?
 		if [ $ERR -eq 124 ]; then
