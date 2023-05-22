@@ -1,5 +1,5 @@
 {
-	"Location:"{
+	"Location":{
 		"OriginAS": "<AS-NUBER e.g. AS12345>",
 		"SourceIP": "<Source ip for mtr program>"
 	},
