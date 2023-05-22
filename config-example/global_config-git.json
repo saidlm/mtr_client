@@ -16,5 +16,5 @@
 			"DestinationURL": "https://<host.domain>:<port>/<path>",
 			"DestinationPassword": "<Password in hash form>"
 		}
-	}
+	]
 }
