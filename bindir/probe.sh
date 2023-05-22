@@ -22,7 +22,13 @@ echo "Probe source nane: $SOURCE"
 
 ## Loading global configuration
 if [ -f "$DATA/$CONFIG_FILE" ]; then
-	eval "$(cat $DATA/$CONFIG_FILE | jq -r '.Destination | { DestinationURL, DestinationPassword } | to_entries | .[] | .key + "=" + (.value | @sh)')"
+	eval "$(cat $DATA/$CONFIG_FILE | jq -r '.Location | { OriginAS, SourceIP } | to_entries | .[] | .key + "=" + (.value | @sh)')"
+	
+	DESTINATIONS=''
+	cat $DATA/$CONFIG_FILE | jq -r '.Destinations[] | @base64' | while read line ; do
+		eval "$(echo $line | base64 --decode | jq -r '{ DestinationURL, DestinationPassword } | to_entries | .[] | .key + "=" + (.value | @sh)')"
+		DESTINATIONS="$DESTINATIONS $DestinationPassword@$DestinationURL"
+        done	
 else
         echo "Global config is missing! Waiting for 5 minutes."
 	sleep 300s
@@ -35,7 +41,7 @@ if [ -f "$DATA/$TARGETS_FILE" ]; then
 		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Custom_comment, Latitude, Longitude} | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 		echo -n "Processing $IP ... "
-		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DestinationURL" -a "$DestinationPassword" -s "$SOURCE" -c "$Custom_comment" -o "$Longitude" -l "$Latitude"
+		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DESTINATION" -s "$SOURCE" -H "$OriginAS" -A "$SourceIP"-c "$Custom_comment" -o "$Longitude" -l "$Latitude"
 		ERR=$?
 		if [ $ERR -eq 124 ]; then
 			echo "Destination host is not responding; timeout."
