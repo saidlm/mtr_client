@@ -3,13 +3,7 @@
 # mtr wrapper for various
 # traceroute measurements
 #
-
-# Release 2.1.3
-
-#
-# Bartlomiej Kos, bartlomiej.kos@t-mobile.pl
-# Martin Saidl, martin.saidl@t-mobile.cz
-# Andreas Laudwein, andreas.laudwein@telekom.de
+# Release 2.1.6
 #
 
 ###
@@ -19,7 +13,7 @@
 ### DEBUG
 # set -x
 
-### ENVIRONMENTALS
+### ENVIRONMENT
 
 PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
 
@@ -121,11 +115,13 @@ esac
 
 send_result1()
 {
-(for _result_target1 in ${_result_delivery_array1[@]}
+(
+for _result_target1 in ${_result_delivery_array1[@]}
 do
   _result_target_credentials1="${_result_target1%%\@*}"
   _result_target_target1="${_result_target1##*\@}"
   curl --connect-timeout 5 -m 5 -s -k -X POST -H "Content-Type: application/json" -H "Authorization: Basic ${_result_target_credentials1}" -d "${output_oneliner1}" "${_result_target_target1}"
+  sleep 0.$(( ($RANDOM % 3) + 1 ))
 done
 ) &
 }
