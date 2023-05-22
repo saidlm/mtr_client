@@ -3,7 +3,9 @@
 # mtr wrapper for various
 # traceroute measurements
 #
-# Release 2.1.2
+
+# Release 2.1.3
+
 #
 # Bartlomiej Kos, bartlomiej.kos@t-mobile.pl
 # Martin Saidl, martin.saidl@t-mobile.cz
@@ -101,7 +103,7 @@ case ${_return_value1} in
   if [[ ${_hop_address1} =~ ${_test_target1} ]]; then _target_reached1="1"; else _target_reached1="0"; fi
   output_oneliner1="${output_oneliner1},\"test_target_reached\":${_target_reached1}"
 
-  output_oneliner1="${output_oneliner1},\"custom_comment\":\"${_custom_comment1}\",\"custom_id\":${_custom_id1},\"geo_lon\":${_geo_lon1},\"geo_lat\":${_geo_lat1}"
+  output_oneliner1="${output_oneliner1},\"custom_comment\":\"${_custom_comment1}\",\"custom_id\":\"${_custom_id1}\",\"geo_lon\":${_geo_lon1},\"geo_lat\":${_geo_lat1}"
 
   output_oneliner1="${output_oneliner1}}"
   output_oneliner2+=("${output_oneliner1}")
