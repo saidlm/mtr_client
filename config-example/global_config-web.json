@@ -1,0 +1,22 @@
+{
+	"Location:"{
+		"OriginAS": "<AS-NUBER e.g. AS12345>",
+		"SourceIP": "<Source ip for mtr program>"
+	},
+	"ConfigSource":{
+		"ConfigMethod": "web",
+		"ConfigURL": "http(s)://<host.domain>/<path>",
+		"ConfigUser": "<username>",
+		"ConfigPassword": "<password>"
+	},
+	"Destinations":[
+		{
+			"DestinationURL": "https://<host.domain>:<port>/<path>",
+			"DestinationPassword": "<Password in hash form>"
+		},
+		{
+			"DestinationURL": "https://<host.domain>:<port>/<path>",
+			"DestinationPassword": "<Password in hash form>"
+		}
+	}
+}
