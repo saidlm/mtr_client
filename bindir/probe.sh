@@ -41,7 +41,7 @@ if [ -f "$DATA/$TARGETS_FILE" ]; then
 		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Custom_comment, Latitude, Longitude} | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 		echo -n "Processing $IP ... "
-		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DESTINATION" -s "$SOURCE" -H "$OriginAS" -A "$SourceIP"-c "$Custom_comment" -o "$Longitude" -l "$Latitude"
+		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DESTINATION" -s "$SOURCE" -H "$OriginAS" -A "$SourceIP" -c "$Custom_comment" -o "$Longitude" -l "$Latitude"
 		ERR=$?
 		if [ $ERR -eq 124 ]; then
 			echo "Destination host is not responding; timeout."
