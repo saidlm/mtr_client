@@ -33,6 +33,7 @@ if [ -f "$DATA/$LOCAL_CONFIG_FILE" ]; then
 	eval "$(cat $DATA/$LOCAL_CONFIG_FILE | jq -r '{ OriginAS, SourceIP, SourceName, Description, Tags } | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 	SOURCE_DESCR=$Description
+	SOURCE_TAGS=$Tags
 fi
 
 ## Setting probe source name
@@ -53,6 +54,7 @@ if [ -f "$DATA/$TARGETS_FILE" ]; then
 		eval "$(echo $line | base64 --decode | jq -r '{ IP, DSCP, Description, Latitude, Longitude, Tags} | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
 		TARGET_DESCR=$Description
+		TAGS="$SOURCE_TAGS $Tags"
 
 		echo -n "Processing $IP ... "
 		$BIN/metis_mtr.sh -t "$IP" -q "$DSCP" -d "$DESTINATION" -s "$SOURCE" -H "$OriginAS" -A "$SourceIP" -c "$TARGET_DESCR" -o "$Longitude" -l "$Latitude"
