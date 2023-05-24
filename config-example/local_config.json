@@ -1,0 +1,15 @@
+{
+	"OriginAS": "<AS-NUBER e.g. AS12345>",
+	"SourceIP": "<Source ip for mtr program>",
+	"SourceName": "<Probe source name>",
+	"Address":{
+		"Street": "<Street>",
+		"City": "<City>",
+		"State": "<State>", 
+		"ZIP": "ZIP code"
+	},
+	"Latitude": "50.123",
+	"Longitude":"15.123",
+	"Description": "<Description ...>",
+	"Tags": "<tag1 tag2 tag3>"
+}
