@@ -3,7 +3,7 @@
 # mtr wrapper for various
 # traceroute measurements
 #
-# Release 3.1.0
+# Release 3.1.1
 #
 
 ###
@@ -159,31 +159,34 @@ fi
 
 _handover_hop_index1=$(( ${_as_handover_hop_number1[0]} - 1 ))
 _handover_hop_index2=$(( ${_as_handover_hop_number1[1]} - 1 ))
-if [ ${#_as_handover_hop_number1[@]} -ge 2 ] && [ "${_hop_asn2[${_handover_hop_index1}]}" = "${_hop_asn2[${_handover_hop_index2}]}" ] && [ $(( ${_as_handover_hop_number1[1]} -1 )) -eq ${_as_handover_hop_number1[0]} ]
+if [ ${_handover_hop_index1} -ge 0 ] && [ ${_handover_hop_index2} -ge 0 ]
 then
-  _handover_as_candidate_found1=1
-fi
+  if [ ${#_as_handover_hop_number1[@]} -ge 2 ] && [ "${_hop_asn2[${_handover_hop_index1}]}" = "${_hop_asn2[${_handover_hop_index2}]}" ] && [ $(( ${_as_handover_hop_number1[1]} -1 )) -eq ${_as_handover_hop_number1[0]} ]
+  then
+    _handover_as_candidate_found1=1
+  fi
 
-if [ $(( ${_as_source_hop_number1[-1]} + 1 )) -eq ${_as_handover_hop_number1[0]} ]
-then
-  if [ ${_handover_source_as_candidate_found1} -eq 1 ]; then _handover1=${_as_source_hop_index1[-1]}; fi
-  if [ ${_handover_as_candidate_found1} -eq 1 ]; then _handover2=${_as_handover_hop_index1[1]}; fi
-fi
+  if [ $(( ${_as_source_hop_number1[-1]} + 1 )) -eq ${_as_handover_hop_number1[0]} ]
+  then
+    if [ ${_handover_source_as_candidate_found1} -eq 1 ]; then _handover1=${_as_source_hop_index1[-1]}; fi
+    if [ ${_handover_as_candidate_found1} -eq 1 ]; then _handover2=${_as_handover_hop_index1[1]}; fi
+  fi
 
-if [ ${_handover_source_as_candidate_found1} -eq 1 ] && [ "${_handover1}" != "" ]
-then
-  output_oneliner1="${output_oneliner2[${_handover1}]/traceroute_mtr1/handover_mtr1}"
-  [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
-  output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[$(( ${_handover1} + 1 ))]}\",${BASH_REMATCH[2]}"
-  ${_result_delivery1}
-fi
+  if [ ${_handover_source_as_candidate_found1} -eq 1 ] && [ "${_handover1}" != "" ]
+  then
+    output_oneliner1="${output_oneliner2[${_handover1}]/traceroute_mtr1/handover_mtr1}"
+    [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
+    output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[$(( ${_handover1} + 1 ))]}\",${BASH_REMATCH[2]}"
+    ${_result_delivery1}
+  fi
 
-if [ ${_handover_as_candidate_found1} -eq 1 ] && [ "${_handover2}" != "" ]
-then
-  output_oneliner1="${output_oneliner2[${_handover2}]/traceroute_mtr1/handover_mtr2}"
-  [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
-  output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[${_handover2}]}\",${BASH_REMATCH[2]}"
-  ${_result_delivery1}
+  if [ ${_handover_as_candidate_found1} -eq 1 ] && [ "${_handover2}" != "" ]
+  then
+    output_oneliner1="${output_oneliner2[${_handover2}]/traceroute_mtr1/handover_mtr2}"
+    [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
+    output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[${_handover2}]}\",${BASH_REMATCH[2]}"
+    ${_result_delivery1}
+  fi
 fi
 }
 
