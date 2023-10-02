@@ -3,7 +3,7 @@
 # mtr wrapper for various
 # traceroute measurements
 #
-# Release 3.1.1
+# Release 3.2.1
 #
 
 ###
@@ -39,7 +39,7 @@ run_test1()
 {
   if [ "${_test_source_address1}" = "" ]; then _mtr1="mtr"; else _mtr1="mtr -a ${_test_source_address1}"; fi
 
-  result1=$(timeout -k5s 120s ${_mtr1} -z -o "LBAWM" -c 10 -b -C -Q ${_test_dscp1} ${_test_target1} | grep -Ev "(,\\?\\?\\?|Mtr_Version)" 2>&1)
+  result1=$(timeout -k5s 120s ${_mtr1} -z -o "LBAWM" -c 10 -b -C -Q ${_test_dscp1} ${_test_target1} | grep -v 'Mtr_Version' 2>&1)
   get_return_value1
 }
 
@@ -102,6 +102,7 @@ case ${_return_value1} in
 
   output_oneliner1="${output_oneliner1}}"
   output_oneliner2+=("${output_oneliner1}")
+  if [[ ${_hop_address1} != "???" ]]; then output_oneliner3="${output_oneliner1}}"; fi
 
   ${_result_delivery1}
  done
@@ -129,66 +130,9 @@ done
 
 print_result1() { echo "${output_oneliner1}"; }
 
-indicate_last_reachable_hop1() { output_oneliner1="${output_oneliner1/traceroute_mtr1/ping_mtr1}"; }
+indicate_last_reachable_hop1() { output_oneliner1="${output_oneliner3}"; output_oneliner1="${output_oneliner1/traceroute_mtr1/ping_mtr1}"; }
 
 set_test_source_name1() { if [ "${_test_source_name1}" = "" ]; then _test_source_name1="$(hostname -f)"; fi; }
-
-find_as_handover_point1()
-{
-_as_source_hop_number1=()
-_as_source_hop_index1=()
-_as_handover_hop_number1=()
-_as_handover_hop_index1=()
-_handover_source_as_candidate_found1=0
-_handover_as_candidate_found1=0
-
-for _hop_index1 in ${!_hop_asn2[@]}
-do
-  if [ "${_hop_asn2[${_hop_index1}]}" = "AS???" ]; then continue; fi
-
-  if [ "${_hop_asn2[${_hop_index1}]}" = "${_test_source_as1}" ]
-  then _as_source_hop_number1+=(${_hop_number2[${_hop_index1}]}); _as_source_hop_index1+=(${_hop_index1})
-  else _as_handover_hop_number1+=(${_hop_number2[${_hop_index1}]}); _as_handover_hop_index1+=(${_hop_index1});
-  fi
-done
-
-if [ ${#_as_source_hop_number1[@]} -ge 2 ] && [ $(( ${_as_source_hop_number1[-1]} - 1 )) -eq ${_as_source_hop_number1[-2]} ]
-then
-  _handover_source_as_candidate_found1=1
-fi
-
-_handover_hop_index1=$(( ${_as_handover_hop_number1[0]} - 1 ))
-_handover_hop_index2=$(( ${_as_handover_hop_number1[1]} - 1 ))
-if [ ${_handover_hop_index1} -ge 0 ] && [ ${_handover_hop_index2} -ge 0 ]
-then
-  if [ ${#_as_handover_hop_number1[@]} -ge 2 ] && [ "${_hop_asn2[${_handover_hop_index1}]}" = "${_hop_asn2[${_handover_hop_index2}]}" ] && [ $(( ${_as_handover_hop_number1[1]} -1 )) -eq ${_as_handover_hop_number1[0]} ]
-  then
-    _handover_as_candidate_found1=1
-  fi
-
-  if [ $(( ${_as_source_hop_number1[-1]} + 1 )) -eq ${_as_handover_hop_number1[0]} ]
-  then
-    if [ ${_handover_source_as_candidate_found1} -eq 1 ]; then _handover1=${_as_source_hop_index1[-1]}; fi
-    if [ ${_handover_as_candidate_found1} -eq 1 ]; then _handover2=${_as_handover_hop_index1[1]}; fi
-  fi
-
-  if [ ${_handover_source_as_candidate_found1} -eq 1 ] && [ "${_handover1}" != "" ]
-  then
-    output_oneliner1="${output_oneliner2[${_handover1}]/traceroute_mtr1/handover_mtr1}"
-    [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
-    output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[$(( ${_handover1} + 1 ))]}\",${BASH_REMATCH[2]}"
-    ${_result_delivery1}
-  fi
-
-  if [ ${_handover_as_candidate_found1} -eq 1 ] && [ "${_handover2}" != "" ]
-  then
-    output_oneliner1="${output_oneliner2[${_handover2}]/traceroute_mtr1/handover_mtr2}"
-    [[ ${output_oneliner1} =~ (.*),\"hop_asn\":\"AS[0-9\?]+\",(.*) ]]
-    output_oneliner1="${BASH_REMATCH[1]},\"hop_asn\":\"${_hop_asn2[${_handover2}]}\",${BASH_REMATCH[2]}"
-    ${_result_delivery1}
-  fi
-fi
-}
 
 ###
 ### LOOPS
@@ -242,8 +186,6 @@ process_result1
 
 indicate_last_reachable_hop1
 ${_result_delivery1}
-
-if [[ ${_test_source_as1} =~ ^AS[0-9]+ ]]; then find_as_handover_point1; fi
 
 ###
 ### POST-RUN
