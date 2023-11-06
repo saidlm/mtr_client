@@ -3,7 +3,7 @@
 # mtr wrapper for various
 # traceroute measurements
 #
-# Release 3.2.1
+# Release 3.2.2
 #
 
 ###
@@ -102,7 +102,7 @@ case ${_return_value1} in
 
   output_oneliner1="${output_oneliner1}}"
   output_oneliner2+=("${output_oneliner1}")
-  if [[ ${_hop_address1} != "???" ]]; then output_oneliner3="${output_oneliner1}}"; fi
+  if [[ ${_hop_address1} != "???" ]]; then output_oneliner3="${output_oneliner1}"; fi
 
   ${_result_delivery1}
  done
@@ -117,7 +117,6 @@ esac
 
 send_result1()
 {
-(
 for _result_target1 in ${_result_delivery_array1[@]}
 do
   _result_target_credentials1="${_result_target1%%\@*}"
@@ -125,7 +124,6 @@ do
   curl --connect-timeout 5 -m 5 -s -k -X POST -H "Content-Type: application/json" -H "Authorization: Basic ${_result_target_credentials1}" -d "${output_oneliner1}" "${_result_target_target1}"
   sleep 0.$(( ($RANDOM % 3) + 1 ))
 done
-) &
 }
 
 print_result1() { echo "${output_oneliner1}"; }
